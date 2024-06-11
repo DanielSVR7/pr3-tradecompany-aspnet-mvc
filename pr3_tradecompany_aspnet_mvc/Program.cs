@@ -1,7 +1,11 @@
+using pr3_tradecompany_aspnet_mvc.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ApplicationDbContext>();
 
 var app = builder.Build();
 
