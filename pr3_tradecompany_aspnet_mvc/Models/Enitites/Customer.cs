@@ -1,11 +1,19 @@
-﻿namespace pr3_tradecompany_aspnet_mvc.Models.Enitites
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace pr3_tradecompany_aspnet_mvc.Models.Enitites
 {
     public class Customer
     {
-        public int Id { get; set; }
-        public string CompanyName { get; set; }
-        public string? Address { get; set; }
-        public string? Phone { get; set; }
+        [Column("id")]
+        public Guid Id { get; set; } 
 
+        [Column("company_name")]
+        public string? CompanyName { get; set; }
+
+        [Column("address")]
+        public string? Address { get; set; }
+
+        [Column("phone")]
+        public string? Phone { get; set; }
     }
 }
