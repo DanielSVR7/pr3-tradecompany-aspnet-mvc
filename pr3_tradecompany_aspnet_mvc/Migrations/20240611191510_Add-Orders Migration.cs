@@ -17,7 +17,7 @@ namespace pr3_tradecompany_aspnet_mvc.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uuid", nullable: true),
-                    date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     amount = table.Column<double>(type: "double precision", nullable: false)
                 },
                 constraints: table =>

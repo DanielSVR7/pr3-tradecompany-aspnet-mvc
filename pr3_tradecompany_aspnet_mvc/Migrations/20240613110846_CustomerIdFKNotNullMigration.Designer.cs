@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using pr3_tradecompany_aspnet_mvc.Data;
@@ -11,9 +12,11 @@ using pr3_tradecompany_aspnet_mvc.Data;
 namespace pr3_tradecompany_aspnet_mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613110846_CustomerIdFKNotNullMigration")]
+    partial class CustomerIdFKNotNullMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace pr3_tradecompany_aspnet_mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("pr3_tradecompany_aspnet_mvc.Models.Enitites.Order", b =>
@@ -58,8 +61,7 @@ namespace pr3_tradecompany_aspnet_mvc.Migrations
                         .HasColumnName("amount");
 
                     b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("customer_id");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone")
@@ -69,7 +71,7 @@ namespace pr3_tradecompany_aspnet_mvc.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("pr3_tradecompany_aspnet_mvc.Models.Enitites.Order", b =>
