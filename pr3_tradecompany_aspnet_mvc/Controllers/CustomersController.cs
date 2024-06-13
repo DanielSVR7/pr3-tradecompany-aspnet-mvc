@@ -23,27 +23,42 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
             return View(customers);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var customers = await _context.Customers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (customers == null)
+            {
+                return NotFound();
+            }
+
+            return View(customers);
+        }
 
         [HttpGet]
         public IActionResult Add()
         {
             return View();
         }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(AddCustomerViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            var customer = new Customer
             {
-                var customer = new Customer
-                {
-                    CompanyName = viewModel.CompanyName,
-                    Address = viewModel.Address,
-                    Phone = viewModel.Phone
-                };
-                await _context.Customers.AddAsync(customer);
-                await _context.SaveChangesAsync();
-            } 
+                CompanyName = viewModel.CompanyName,
+                Address = viewModel.Address,
+                Phone = viewModel.Phone
+            };
+            await _context.Customers.AddAsync(customer);
+            await _context.SaveChangesAsync();
             return View();
         }
 
@@ -58,6 +73,7 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Customer updatedCustomer)
         {
             var customer = await _context.Customers.FindAsync(updatedCustomer.Id);
@@ -74,7 +90,8 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
             return RedirectToAction("Index", "Customers");
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Customer deletingCustomer)
         {
             var customer = await _context.Customers

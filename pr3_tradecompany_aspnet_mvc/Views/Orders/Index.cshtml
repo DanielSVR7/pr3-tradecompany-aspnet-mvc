@@ -1,41 +1,50 @@
-﻿@model IEnumerable<pr3_tradecompany_aspnet_mvc.Models.Enitites.Order>
+﻿@model List<pr3_tradecompany_aspnet_mvc.Models.Enitites.Order>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Заказы";
 }
 
-<h1>Index</h1>
+<h1>
+    Заказы
+    <a class="btn btn-light"
+             asp-controller="Orders"
+             asp-action="Add">
+        Создать
+    </a>
+</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
+            <th>Идентификатор</th>
+            <th>Заказчик</th>
+            <th>Дата</th>
+            <th>Сумма</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var order in Model) 
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(Model=>order.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(Model=>order.Customer.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(Model=>order.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(Model=>order.Amount)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@order.Id">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@order.Id">Детали</a> |
+                    <a asp-action="Delete" asp-route-id="@order.Id">Удалить</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

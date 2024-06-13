@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pr3_tradecompany_aspnet_mvc.Data;
+using pr3_tradecompany_aspnet_mvc.Models;
 using pr3_tradecompany_aspnet_mvc.Models.Enitites;
 
 namespace pr3_tradecompany_aspnet_mvc.Controllers
@@ -22,7 +23,12 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders.ToListAsync());
+            var orders = await _context.Orders.ToListAsync();
+            foreach (var order in orders)
+            {
+                order.Customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == order.CustomerId);
+            }
+            return View(orders);
         }
 
         [HttpGet]
@@ -39,119 +45,83 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
             {
                 return NotFound();
             }
+            order.Customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == order.CustomerId);
 
             return View(order);
         }
 
+        //private void PopulateCustomerList()
+        //{
+        //    IEnumerable<SelectListItem> customers =
+        //        _context.Customers.Select(i => new SelectListItem
+        //        {
+        //            Text = i.CompanyName,
+        //            Value = i.Id.ToString()
+        //        });
+        //    ViewBag.CustomersList= customers;
+        //}
         [HttpGet]
         public IActionResult Add()
         {
+            SelectList customers = new SelectList(_context.Customers, "Id", "CompanyName");
+            ViewBag.Customers = customers;
+
             return View();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([Bind("Id,Date,Amount")] Order order)
+        public async Task<IActionResult> Add(AddOrderViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            var order = new Order
             {
-                order.Id = Guid.NewGuid();
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
+                CustomerId = viewModel.CustomerId,
+                Date = viewModel.Date,
+                Amount = viewModel.Amount
+            };
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+            return View();
         }
 
-        // GET: Orders/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
             return View(order);
         }
 
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Date,Amount")] Order order)
+        public async Task<IActionResult> Edit(Order updatedOrder)
         {
-            if (id != order.Id)
+            var order = await _context.Orders.FindAsync(updatedOrder.Id);
+
+            if (order is not null)
             {
-                return NotFound();
+                order.Customer = updatedOrder.Customer;
+                order.Date = updatedOrder.Date;
+                order.Amount = updatedOrder.Amount;
+
+                await _context.SaveChangesAsync();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
+            return RedirectToAction("Index", "Orders");
         }
 
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
-        // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> Delete(Order deletingOrder)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
+            var order = await _context.Orders
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == deletingOrder.Id);
+            if (order is not null)
             {
                 _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool OrderExists(Guid id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
+            return RedirectToAction("Index", "Orders");
         }
     }
 }

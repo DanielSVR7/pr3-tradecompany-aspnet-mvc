@@ -7,8 +7,9 @@ namespace pr3_tradecompany_aspnet_mvc.Models.Enitites
         [Column("id")]
         public Guid Id { get; set; }
 
-        [Column("customer_id")]
-        public Customer? Customer { get; set; }
+        [Column("customer_id")] 
+        public Guid CustomerId { get; set; }
+        public Customer Customer { get; set; }
 
         [Column("date")]
         public DateTime Date { get; set; }

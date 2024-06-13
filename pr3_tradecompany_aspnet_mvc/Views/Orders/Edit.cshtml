@@ -4,10 +4,14 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Order</h4>
+<h1>Заказ</h1>
+<h4>Редактирование</h4>
 <hr />
+
+@if (Model is null)
+{
+    <p>Заказчик с заданным id не найден!</p>
+}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">

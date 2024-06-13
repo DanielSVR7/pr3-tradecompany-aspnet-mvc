@@ -1,10 +1,10 @@
-﻿@model pr3_tradecompany_aspnet_mvc.Models.Enitites.Order
+﻿@model pr3_tradecompany_aspnet_mvc.Models.Enitites.Customer
 
 @{
     ViewData["Title"] = "Детали";
 }
 
-<h1>Заказ</h1>
+<h1>Заказчик</h1>
 
 <div>
     <h4>Детали</h4>
@@ -16,23 +16,23 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Id)
         </dd>
+        <dt class = "col-sm-2">
+            Название компании
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+        <dt class = "col-sm-2">
+            Адрес
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
         <dt class="col-sm-2">
-            Заказчик
+            Телефон
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CompanyName)
-        </dd>
-        <dt class = "col-sm-2">
-            Дата
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            Сумма
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
+            @Html.DisplayFor(model => model.Phone)
         </dd>
     </dl>
 </div>
