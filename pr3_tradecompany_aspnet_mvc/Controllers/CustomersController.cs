@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using pr3_tradecompany_aspnet_mvc.Data;
 using pr3_tradecompany_aspnet_mvc.Models;
 using pr3_tradecompany_aspnet_mvc.Models.Enitites;
+using System.Net;
 
 namespace pr3_tradecompany_aspnet_mvc.Controllers
 {
@@ -26,19 +27,9 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customers = await _context.Customers
+            var customer = await _context.Customers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (customers == null)
-            {
-                return NotFound();
-            }
-
-            return View(customers);
+            return View(customer);
         }
 
         [HttpGet]
@@ -67,7 +58,8 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             return View(customer);
         }
@@ -89,6 +81,14 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
 
             return RedirectToAction("Index", "Customers");
         }
+
+        [HttpGet]
+        public ActionResult Delete(Guid id)
+        {
+            Customer customer = _context.Customers.Find(id);
+            return View(customer);
+        }
+
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

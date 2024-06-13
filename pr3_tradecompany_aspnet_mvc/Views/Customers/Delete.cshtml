@@ -1,0 +1,53 @@
+﻿@model pr3_tradecompany_aspnet_mvc.Models.Enitites.Customer
+
+@{
+    ViewData["Title"] = "Удаление заказчика";
+}
+
+<h1>Заказчик</h1>
+<h4>Удаление</h4>
+@if (Model is null)
+{
+	<p>Заказчик с заданным id не найден!</p>
+	<div><a asp-action="Index">Назад к списку</a></div>
+}
+else
+{
+<h3>Вы уверены что хотите удалить запись?</h3>
+<div>
+
+    <hr />
+	<dl class="row">
+		<dt class="col-sm-2">
+			Идентификатор
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Id)
+		</dd>
+		<dt class="col-sm-2">
+			Название компании
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.CompanyName)
+		</dd>
+		<dt class="col-sm-2">
+			Адрес
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Address)
+		</dd>
+		<dt class="col-sm-2">
+			Телефон
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Phone)
+		</dd>
+	</dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index">Назад к списку</a>
+    </form>
+</div>
+}
