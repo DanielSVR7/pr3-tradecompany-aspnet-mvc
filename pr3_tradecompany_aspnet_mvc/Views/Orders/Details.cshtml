@@ -5,9 +5,17 @@
 }
 
 <h1>Заказ</h1>
+<h4>Детали</h4>
 
+@if (Model is null)
+{
+	<p>Заказ с заданным id не найден!</p>
+	<div><a asp-action="Index">Назад к списку</a></div>
+}
+else
+{
 <div>
-    <h4>Детали</h4>
+
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -40,3 +48,4 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Редактировать</a> |
     <a asp-action="Index">Назад к списку</a>
 </div>
+}

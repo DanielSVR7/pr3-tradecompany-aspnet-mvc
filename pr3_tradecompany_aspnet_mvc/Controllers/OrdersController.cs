@@ -34,32 +34,15 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var order = await _context.Orders
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
+            if (order is not null)
             {
-                return NotFound();
+                order.Customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == order.CustomerId);
             }
-            order.Customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == order.CustomerId);
-
             return View(order);
         }
 
-        //private void PopulateCustomerList()
-        //{
-        //    IEnumerable<SelectListItem> customers =
-        //        _context.Customers.Select(i => new SelectListItem
-        //        {
-        //            Text = i.CompanyName,
-        //            Value = i.Id.ToString()
-        //        });
-        //    ViewBag.CustomersList= customers;
-        //}
         [HttpGet]
         public IActionResult Add()
         {
@@ -81,13 +64,15 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
             };
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
-            return View();
+            return RedirectToAction("Index", "Orders");
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid? id)
         {
             var order = await _context.Orders.FindAsync(id);
+            SelectList customers = new SelectList(_context.Customers, "Id", "CompanyName");
+            ViewBag.Customers = customers;
             return View(order);
         }
 
@@ -107,6 +92,17 @@ namespace pr3_tradecompany_aspnet_mvc.Controllers
             }
 
             return RedirectToAction("Index", "Orders");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            Order order = _context.Orders.Find(id);
+            if (order is not null)
+            {
+                order.Customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == order.CustomerId);
+            }
+            return View(order);
         }
 
         [HttpPost, ActionName("Delete")]
