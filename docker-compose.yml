@@ -4,7 +4,7 @@ services:
     ports:
       - "8000:80"
     environment:
-      - ConnectionStrings__TradeCompany=${CONNECTION_STRING}
+      - ConnectionStrings__TradeCompany=Server=db;Port=5432;Database=${POSTGRES_DB};User Id=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};
     env_file:
       - .env
     depends_on:

@@ -2,9 +2,8 @@
 
 set -e
 
-# Получаем параметры из переменных окружения
-DB_USER="${POSTGRES_USER:-postgres}"  # Значение по умолчанию 'postgres'
-DB_NAME="${POSTGRES_DB:-tradecompany}"
+DB_USER="${POSTGRES_USER}" 
+DB_NAME="${POSTGRES_DB}"
 BACKUP_FILE="/docker-entrypoint-initdb.d/backups/tradecompany.dump"
 
 until pg_isready -U "$DB_USER"; do
