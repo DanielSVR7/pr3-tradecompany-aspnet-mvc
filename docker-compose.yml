@@ -1,14 +1,32 @@
 services:
   webapp:
     build: ./pr3_tradecompany_aspnet_mvc
-    ports:
-      - "8000:80"
     environment:
       - ConnectionStrings__TradeCompany=Server=db;Port=5432;Database=${POSTGRES_DB};User Id=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:3000
     env_file:
       - .env
+    expose:
+      - 3000  
     depends_on:
       - db
+    networks:
+      - backend
+      
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - webapp
+    networks:
+      - backend
+      - frontend
 
   db:
     image: postgres:17-alpine
@@ -21,5 +39,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./pr3_tradecompany_aspnet_mvc/db:/docker-entrypoint-initdb.d  
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+networks:
+  backend:
+  frontend:
 volumes:
   postgres_data:
